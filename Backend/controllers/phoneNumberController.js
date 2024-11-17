@@ -1,7 +1,7 @@
-// controllers/phoneNumberController.js
+
 const PhoneNumber = require('../models/phoneNumber');
 
-// Get all phone numbers
+
 const getAllPhoneNumbers = async (req, res) => {
   try {
     const phoneNumbers = await PhoneNumber.find();
@@ -11,7 +11,6 @@ const getAllPhoneNumbers = async (req, res) => {
   }
 };
 
-// Add a new phone number
 const createPhoneNumber = async (req, res) => {
   const { number, type, countryCode } = req.body;
 
@@ -29,7 +28,7 @@ const createPhoneNumber = async (req, res) => {
   }
 };
 
-// Get a single phone number by ID
+
 const getPhoneNumberById = async (req, res) => {
   try {
     const phoneNumber = await PhoneNumber.findById(req.params.id);
@@ -42,7 +41,6 @@ const getPhoneNumberById = async (req, res) => {
   }
 };
 
-// Update a phone number
 const updatePhoneNumber = async (req, res) => {
   try {
     const updatedPhoneNumber = await PhoneNumber.findByIdAndUpdate(
@@ -59,7 +57,7 @@ const updatePhoneNumber = async (req, res) => {
   }
 };
 
-// Delete a phone number
+
 const deletePhoneNumber = async (req, res) => {
   try {
     const phoneNumber = await PhoneNumber.findByIdAndDelete(req.params.id);
