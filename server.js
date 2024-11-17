@@ -28,10 +28,18 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));  
 
+const PhoneNumber = require('./Backend/models/phoneNumber');
 
 const phoneNumberRoutes = require('./Backend/routes/phoneNumberRoutes');
+
+const phoneNumberControllers = require('./Backend/controllers/phoneNumberController')
 app.use('/api/phone', phoneNumberRoutes);
 
+
+app.get('/', (req, res) => {
+  console.log('GET /api/phone was triggered!');
+  res.json({ message: 'All phone numbers' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
