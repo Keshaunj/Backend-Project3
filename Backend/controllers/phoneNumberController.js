@@ -70,11 +70,40 @@ const deletePhoneNumber = async (req, res) => {
   }
 };
 
+const lookupPhoneNumber = async (req,res) =>{
+  const {phoneNumber} = req.params;
+
+  try {
+    const phoneRecord = await PhoneNumber.findOne({ phoneNumber });
+    if (!phoneRecord) {
+      return res.status(404).json({ error: 'Phone number not found' });
+    }
+    res.json(phoneRecord);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+  const validatePhoneNumber = async (req, res) => {
+    const { phoneNumber } = req.params;  
+  
+    const apiUrl = `${process.env.API_URL}${phoneNumber}?apikey=${process.env.API_KEY}`;
+    
+    try {
+      const response = await axios.get(apiUrl);
+      res.status(200).json(response.data);  
+    } catch (error) {
+      console.error('Error calling API:', error);
+      res.status(500).json({ message: 'Error fetching phone number data' });
+    }
+  };
+
+};
 module.exports = {
   getAllPhoneNumbers,
   createPhoneNumber,
   getPhoneNumberById,
   updatePhoneNumber,
   deletePhoneNumber,
+  lookupPhoneNumber,
+  validatePhoneNumber,
 };
 

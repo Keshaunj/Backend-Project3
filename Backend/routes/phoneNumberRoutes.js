@@ -1,20 +1,23 @@
-
 const express = require('express');
 const router = express.Router();
-const phoneNumberController = require('../controllers/phoneNumberController');
+const { 
+  getAllPhoneNumbers, 
+  createPhoneNumber, 
+  getPhoneNumberById, 
+  updatePhoneNumber, 
+  deletePhoneNumber, 
+  lookupPhoneNumber, 
+  numSearch 
+} = require('../controllers/phoneNumberController');
 
 
-router.get('/', phoneNumberController.getAllPhoneNumbers);
+router.get('/', getAllPhoneNumbers);  
+router.post('/', createPhoneNumber); 
+router.get('/:id', getPhoneNumberById);  
+router.put('/:id', updatePhoneNumber);  
+router.delete('/:id', deletePhoneNumber);  
 
-
-router.post('/', phoneNumberController.createPhoneNumber);
-
-
-router.get('/:id', phoneNumberController.getPhoneNumberById);
-
-router.patch('/:id', phoneNumberController.updatePhoneNumber);
-
-
-router.delete('/:id', phoneNumberController.deletePhoneNumber);
+router.get('/lookup/:phoneNumber', lookupPhoneNumber); 
+router.get('/validate/:phoneNumber', numSearch);  
 
 module.exports = router;
