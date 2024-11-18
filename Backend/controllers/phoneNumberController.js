@@ -86,20 +86,47 @@ const lookupPhoneNumber = async (req, res) => {
   }
 };
 
-
 const validatePhoneNumber = async (req, res) => {
-  const { phoneNumber } = req.params;
-  
-  const apiUrl = `${process.env.API_URL}${phoneNumber}?apikey=${process.env.API_KEY}`;
-
+  const phoneNumber = req.params.phoneNumber; 
   try {
-    const response = await axios.get(apiUrl);
-    res.status(200).json(response.data);  
+   
+    const requestUrl = `${process.env.API_URL}${phoneNumber}`;
+
+    console.log(`Requesting URL: ${requestUrl}`);
+
+   
+    const response = await axios.get(requestUrl, {
+      params: {
+        apikey: process.env.API_KEY 
+      }
+    });
+
+  
+    const apiPhoneNumber = response.data.number;
+
+
+    if (apiPhoneNumber && apiPhoneNumber === phoneNumber) {
+      res.json(response.data);
+    } else {
+    
+      const validFormats = [response.data.international_format, response.data.local_format];
+      if (validFormats.includes(phoneNumber)) {
+        res.json(response.data); 
+      } else {
+        res.status(400).json({
+          error: 'Mismatched data or unexpected response from API',
+          received: response.data
+        });
+      }
+    }
   } catch (error) {
-    console.error('Error calling API:', error);
-    res.status(500).json({ message: 'Error fetching phone number data from API' });
+    console.error('Error validating phone number with external API:', error);
+    res.status(500).json({ error: 'Error validating phone number with external API' });
   }
 };
+
+
+
 
 module.exports = {
   getAllPhoneNumbers,

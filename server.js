@@ -32,6 +32,14 @@ app.get("/", (req, res) => {
   res.json({ message: "All phone numbers" });
 });
 
+app.get("/api/", (req, res) => {
+  res.json({ message: "Welcome to the API" });
+});
+
+
+
+app.get('.api/phone/validate/:phoneNumber',phoneNumberControllers.validatePhoneNumber)
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
