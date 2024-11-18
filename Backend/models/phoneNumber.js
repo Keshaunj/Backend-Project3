@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const phoneNumberSchema = new mongoose.Schema({
@@ -6,6 +5,7 @@ const phoneNumberSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    match: /^[+]?[0-9]{10,15}$/, // <-- regex learn this later but use from regex calculator
   },
   localFormat: String,
   internationalFormat: String,

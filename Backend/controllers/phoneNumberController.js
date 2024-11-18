@@ -1,4 +1,4 @@
-
+const axios = require('axios');
 const PhoneNumber = require('../models/phoneNumber');
 
 
@@ -10,6 +10,7 @@ const getAllPhoneNumbers = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 const createPhoneNumber = async (req, res) => {
   const { number, type, countryCode } = req.body;
@@ -41,6 +42,7 @@ const getPhoneNumberById = async (req, res) => {
   }
 };
 
+
 const updatePhoneNumber = async (req, res) => {
   try {
     const updatedPhoneNumber = await PhoneNumber.findByIdAndUpdate(
@@ -70,33 +72,35 @@ const deletePhoneNumber = async (req, res) => {
   }
 };
 
-const lookupPhoneNumber = async (req,res) =>{
-  const {phoneNumber} = req.params;
+const lookupPhoneNumber = async (req, res) => {
+  const { phoneNumber } = req.params;
 
   try {
     const phoneRecord = await PhoneNumber.findOne({ phoneNumber });
     if (!phoneRecord) {
-      return res.status(404).json({ error: 'Phone number not found' });
+      return res.status(404).json({ error: 'Phone number not found in the database' });
     }
     res.json(phoneRecord);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-  const validatePhoneNumber = async (req, res) => {
-    const { phoneNumber } = req.params;  
-  
-    const apiUrl = `${process.env.API_URL}${phoneNumber}?apikey=${process.env.API_KEY}`;
-    
-    try {
-      const response = await axios.get(apiUrl);
-      res.status(200).json(response.data);  
-    } catch (error) {
-      console.error('Error calling API:', error);
-      res.status(500).json({ message: 'Error fetching phone number data' });
-    }
-  };
-
 };
+
+
+const validatePhoneNumber = async (req, res) => {
+  const { phoneNumber } = req.params;
+  
+  const apiUrl = `${process.env.API_URL}${phoneNumber}?apikey=${process.env.API_KEY}`;
+
+  try {
+    const response = await axios.get(apiUrl);
+    res.status(200).json(response.data);  
+  } catch (error) {
+    console.error('Error calling API:', error);
+    res.status(500).json({ message: 'Error fetching phone number data from API' });
+  }
+};
+
 module.exports = {
   getAllPhoneNumbers,
   createPhoneNumber,
@@ -104,6 +108,6 @@ module.exports = {
   updatePhoneNumber,
   deletePhoneNumber,
   lookupPhoneNumber,
-  validatePhoneNumber,
+  validatePhoneNumber, 
 };
 
