@@ -1,13 +1,15 @@
+require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const app = express();
-const PORT = process.env.PORT || 3000;
-const PhoneNumber = require("./Backend/models/phoneNumber");
 
-const phoneNumberRoutes = require("./Backend/routes/phoneNumberRoutes");
+const PORT = process.env.PORT || 3000;
+const phoneNumber = require("./Backend/models/phoneNumber"); //
+
+const phoneNumberRoutes = require("./routes/phoneNumberRoutes"); //
 
 const phoneNumberControllers = require("./Backend/controllers/phoneNumberController");
 
@@ -17,16 +19,13 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-dotenv.config();
+
 
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-
-app.use("/api/phone", phoneNumberRoutes);
-app.use('/phoneNumbers', phoneNumberRoutes);
 app.get("/", (req, res) => {
   console.log("GET /api/phone was triggered!");
   res.json({ message: "All phone numbers" });
@@ -36,9 +35,28 @@ app.get("/api/", (req, res) => {
   res.json({ message: "Welcome to the API" });
 });
 
+app.get(
+  "/api/phone/validate/:phoneNumber",
+  phoneNumberControllers.validatePhoneNumber
+);
 
 
-app.get('.api/phone/validate/:phoneNumber',phoneNumberControllers.validatePhoneNumber)
+// proxy server below
+app.get("/api/phone/validate/:phoneNumber", async (req, res) => {
+  const phoneNumber = req.params.phoneNumber;
+  const apiUrl = `${process.env.API_URL}${phoneNumber}`;
+
+  try {
+    // Send req to my 3rd party API with API key & APIurl to verfiy the api im using and the user
+    const response = await axios.get(apiUrl, {
+      params: { apikey: process.env.API_KEY }
+    });
+    res.json(response.data);  // send a message to user which is the message below saying error 
+  } catch (error) {
+    res.status(500).json({ message: "Error validating phone number" });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
