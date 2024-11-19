@@ -3,19 +3,6 @@ const PhoneNumber = require('../models/phoneNumber');
 
 
 
-const lookupPhoneNumber = async (req, res) => {
-  const { phoneNumber } = req.params;
-
-  try {
-    const phoneRecord = await PhoneNumber.findOne({ phoneNumber });
-    if (!phoneRecord) {
-      return res.status(404).json({ error: 'Phone number not found in the database' });
-    }
-    res.json(phoneRecord);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
 const validatePhoneNumber = async (req, res) => {
   const phoneNumber = req.params.phoneNumber; 
@@ -60,6 +47,5 @@ const validatePhoneNumber = async (req, res) => {
 
 
 module.exports = {
-  lookupPhoneNumber,
   validatePhoneNumber, 
 };
