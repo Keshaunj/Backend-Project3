@@ -41,17 +41,17 @@ app.get(
 );
 
 
-// proxy server below
+
 app.get("/api/phone/validate/:phoneNumber", async (req, res) => {
   const phoneNumber = req.params.phoneNumber;
   const apiUrl = `${process.env.API_URL}${phoneNumber}`;
 
   try {
-    // Send req to my 3rd party API with API key & APIurl to verfiy the api im using and the user
+    
     const response = await axios.get(apiUrl, {
       params: { apikey: process.env.API_KEY }
     });
-    res.json(response.data);  // send a message to user which is the message below saying error 
+    res.json(response.data);  
   } catch (error) {
     res.status(500).json({ message: "Error validating phone number" });
   }
